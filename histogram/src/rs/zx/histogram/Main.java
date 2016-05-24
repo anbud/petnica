@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
@@ -66,9 +65,6 @@ public class Main {
 		
 		readFiles(in);
 		
-		for(int i = 0; i < 256; i++)
-			histogram.put(i, 0);
-		
 		for(Entry<String, BufferedImage> e : images.entrySet()) {
 			BufferedImage image = e.getValue();
 			
@@ -114,13 +110,26 @@ public class Main {
 			if(sum < 10000) {
 				for(int i = 0; i < 10000-sum; i++) {
 					int in = i%256;
-					mhistogram.put(in, mhistogram.get(in)+1);
+					Integer y = mhistogram.get(in);
+					
+					//Avoid zero values
+					if(y != 0) 
+						mhistogram.put(in, y+1);
+					else 
+						sum--;
+					
 				}
 			}
 			if(sum > 10000) {
 				for(int i = 0; i < sum-10000; i++) {
 					int in = i%256;
-					mhistogram.put(in, mhistogram.get(in)-1);
+					Integer y = mhistogram.get(in);
+					
+					//Avoid zero values
+					if(y != 0) 
+						mhistogram.put(in, y-1);
+					else 
+						sum++;
 				}
 			}	
 			

@@ -2,6 +2,7 @@ package rs.zx.bigrams;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,8 +29,16 @@ public class Main {
 			BufferedReader in = new BufferedReader(new FileReader(args[0]));
 			BufferedReader sin = new BufferedReader(new FileReader(args[1]));
 			
-			BufferedWriter out = new BufferedWriter(new PrintWriter(args[2]));
-			BufferedWriter sout = new BufferedWriter(new PrintWriter(args[3]));
+			File outF1 = new File(args[2]);
+			File outF2 = new File(args[3]);
+			
+			if(outF1.getParentFile() != null)
+				outF1.getParentFile().mkdirs();
+			if(outF2.getParentFile() != null)
+				outF2.getParentFile().mkdirs();
+			
+			BufferedWriter out = new BufferedWriter(new PrintWriter(outF1));
+			BufferedWriter sout = new BufferedWriter(new PrintWriter(outF2));
 			
 			String text = in.readLine();
 			LinkedList<String> seq = new LinkedList<String>();
@@ -52,6 +61,12 @@ public class Main {
 				else
 					bigrams.put(bg, 1);
 			}
+			//last char
+			String ug = text.substring(text.length()-1, text.length());
+			if(count.containsKey(ug))
+				count.put(ug, count.get(ug)+1);
+			else
+				count.put(ug, 1);
 			
 			for(Entry<String, Integer> e : bigrams.entrySet())
 				out.write(e.getKey() + " " + e.getValue() + "\n");
